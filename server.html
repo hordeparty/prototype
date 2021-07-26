@@ -1,0 +1,266 @@
+<!doctypehtml>
+<html lang=en-us>
+<head>
+  <meta charset=utf-8>
+  <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+  <title>Emscripten-Generated Code</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
+  <script src="server.js"></script>
+  <style>
+    .emscripten {
+      padding-right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      display: block
+    }
+
+    textarea.emscripten {
+      font-family: monospace;
+      width: 80%
+    }
+
+    div.emscripten {
+      text-align: center
+    }
+
+    div.emscripten_border {
+    //border: 1px solid #000
+    }
+
+    canvas.emscripten {
+      border: 0 none;
+      display: none;
+    }
+
+    .spinner {
+      height: 50px;
+      width: 50px;
+      margin: 0 auto;
+      -webkit-animation: rotation .8s linear infinite;
+      -moz-animation: rotation .8s linear infinite;
+      -o-animation: rotation .8s linear infinite;
+      animation: rotation .8s linear infinite;
+      border-left: 10px solid #0096f0;
+      border-right: 10px solid #0096f0;
+      border-bottom: 10px solid #0096f0;
+      border-top: 10px solid #6400c8;
+      border-radius: 100%;
+      background-color: #c864fa
+    }
+
+    @-webkit-keyframes rotation {
+      from {
+        -webkit-transform: rotate(0)
+      }
+
+      to {
+        -webkit-transform: rotate(360deg)
+      }
+    }
+
+    @-moz-keyframes rotation {
+      from {
+        -moz-transform: rotate(0)
+      }
+
+      to {
+        -moz-transform: rotate(360deg)
+      }
+    }
+
+    @-o-keyframes rotation {
+      from {
+        -o-transform: rotate(0)
+      }
+
+      to {
+        -o-transform: rotate(360deg)
+      }
+    }
+
+    @keyframes rotation {
+      from {
+        transform: rotate(0)
+      }
+
+      to {
+        transform: rotate(360deg)
+      }
+    }
+  </style>
+</head>
+<body>
+<table border="1">
+  <thead>
+  <tr>
+    <td>Jogador</td>
+    <td>Controle</td>
+    <td>Status</td>
+  </tr>
+  </thead>
+  <tbody id="tbodyJogadores"></tbody>
+</table>
+<hr>
+<figure id=spinner style=overflow:visible>
+  <div class=spinner></div>
+  <center style=margin-top:.5em>
+    <strong>emscripten</strong>
+  </center>
+</figure>
+<div class="emscripten" id="status">Downloading...</div>
+<div class="emscripten">
+  <progress hidden id="progress" max="100" value="0"></progress>
+</div>
+<div class="emscripten_border">
+  <canvas class="emscripten" id="canvas"></canvas>
+</div>
+<video width="640" height="480" controls id="emulator-video" playsinline autoplay></video>
+<hr>
+<div>
+  <input id=file-selector type=file>
+  <button id="start">Start</button>
+</div>
+<div style="display: none;">
+  <label>Current Frameskip</label>
+  <span id=current-frameskip>0</span>
+  <button id=frameskip-increment>+</button>
+  <button id=frameskip-decrement>-</button>
+  <label>Transparency</label>
+  <input id=transparency-toggle type=checkbox>
+  <label>Display FPS</label>
+  <input id=fps-toggle type=checkbox checked>
+  <div class=emscripten>
+    <input id=resize type=checkbox>
+    Resize canvas <input id=pointer-lock type=checkbox checked>
+    Lock/hide
+    mouse pointer
+    <button id=fullscreen>Fullscreen</button>
+  </div>
+  <hr>
+  <textarea class=emscripten id=output rows=8></textarea>
+  <hr>
+</div>
+<script>
+  var statusElement = document.getElementById("status")
+    , progressElement = document.getElementById("progress")
+    , spinnerElement = document.getElementById("spinner");
+  window.Module = {
+    preRun: [],
+    postRun: [],
+    print: function() {
+      var e = document.getElementById("output");
+      return e.value = "",
+        function(t) {
+          var n = arguments.length > 1 ? [].slice.call(arguments).join(" ") : t;
+          e.value += n + "\n",
+            e.scrollTop = e.scrollHeight
+        }
+    }(),
+    printErr: function(e) {
+      var t = arguments.length > 1 ? [].slice.call(arguments).join(" ") : e;
+      console.error(t)
+    },
+    canvas: function() {
+      var e = document.getElementById("canvas");
+      return e.addEventListener("webglcontextlost", (function(e) {
+          alert("WebGL context lost. You will need to reload the page."),
+            e.preventDefault()
+        }
+      ), !1),
+        e
+    }(),
+    setStatus: function(e) {
+      if (Module.setStatus.last || (Module.setStatus.last = {
+        time: Date.now(),
+        text: ""
+      }),
+      e !== Module.setStatus.text) {
+        var t = e.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/)
+          , n = Date.now();
+        t && n - Date.now() < 30 || (t ? (e = t[1],
+          progressElement.value = 100 * parseInt(t[2]),
+          progressElement.max = 100 * parseInt(t[4]),
+          progressElement.hidden = !1,
+          spinnerElement.hidden = !1) : (progressElement.value = null,
+          progressElement.max = null,
+          progressElement.hidden = !0,
+        e || (spinnerElement.hidden = !0)),
+          statusElement.innerHTML = e)
+      }
+    },
+    totalDependencies: 0,
+    monitorRunDependencies: function(e) {
+      this.totalDependencies = Math.max(this.totalDependencies, e),
+        Module.setStatus(e ? "Preparing... (" + (this.totalDependencies - e) + "/" + this.totalDependencies + ")" : "All downloads complete.")
+    }
+  },
+    Module.setStatus("Downloading..."),
+    window.onerror = function() {
+      Module.setStatus("Exception thrown, see JavaScript console"),
+        spinnerElement.style.display = "none",
+        Module.setStatus = function(e) {
+          e && Module.printErr("[post-exception status] " + e)
+        }
+    }
+    ,
+    window.initSNES = function() {
+      var e, t, n, l = document.getElementById("start"), o = document.getElementById("file-selector"), r = (document.getElementById("frameskip-increment"),
+        document.getElementById("frameskip-decrement"),
+        document.getElementById("current-frameskip"),
+        document.getElementById("transparency-toggle")), d = document.getElementById("fps-toggle"), s = document.getElementById("fullscreen"), a = Module.print, u = "", i = (e = 1,
+          function() {
+            e = !e,
+              Module._set_transparency(e),
+              a("Transparency is now " + (e ? "on" : "off"))
+          }
+      ), c = (t = null,
+          n = Module.cwrap("run", null, ["string"]),
+          function() {
+            clearInterval(t),
+              t = setInterval(Module._S9xAutoSaveSRAM, 1e4),
+              document.getElementById("start").disabled = !0,
+              n(u);
+            const audioStream = SDL.audioContext.createMediaStreamDestination();
+            SDL.destination = audioStream;
+
+            let canvasStream = document.getElementById('canvas').captureStream();
+            const mediaStream = new MediaStream(canvasStream.getTracks().concat(SDL.destination.stream.getTracks()));
+            let emulatorVideo = document.getElementById("emulator-video");
+            emulatorVideo.srcObject = mediaStream;
+          }
+      );
+      d.addEventListener("click", Module._toggle_display_framerate),
+        l.addEventListener("click", c),
+        o.addEventListener("change", (function(e) {
+            var t = e.currentTarget.files[0];
+            a(t.name),
+              u = t.name;
+            var n = new FileReader;
+            n.onprogress = function(e) {
+              e.lengthComputable ? a(Math.round(e.loaded / e.total * 100) + "%") : count_print(e.loaded + "bytes"),
+                document.getElementById("start").disabled = !1
+            }
+              ,
+              n.onload = function(e) {
+                a(t.name + " loaded"),
+                  Module.FS_createDataFile("/", t.name, new Uint8Array(this.result), !0, !0)
+              }
+              ,
+              n.readAsArrayBuffer(t)
+          }
+        )),
+        r.addEventListener("click", i),
+        s.addEventListener("click", (function() {
+            document.getElementById("pointer-lock").checked,
+              document.getElementById("resize").checked;
+            document.getElementById("canvas").requestFullscreen()
+          }
+        )),
+        window.addEventListener("beforeunload", Module._S9xAutoSaveSRAM)
+    }
+</script>
+<script async src="snes9x.js"></script>
+<script src="simplepeer.js"></script>
+</body>
+</html>
