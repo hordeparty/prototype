@@ -1,9 +1,7 @@
 let p = null;
 let nomeJogador = "";
 
-let keypressTrigger = [];
-
-let gamePadButtons = {
+let keyPadButtons = {
   y: "z",
   x: "s",
   b: "x",
@@ -16,16 +14,63 @@ let gamePadButtons = {
   down: "ArrowDown",
   left: "ArrowLeft",
   right: "ArrowRight",
-  getButton: function(eventKey){
-    return Object.keys(gamePadButtons).find(key => gamePadButtons[key] === eventKey);
+  getButton: function (eventKey) {
+    return Object.keys(keyPadButtons).find(key => keyPadButtons[key] === eventKey);
   }
 };
 
+// PS4, PS5, Xbox360
+class gamePad {
+  b = 0;
+  a = 1;
+  y = 2;
+  x = 3;
+  l = 4;
+  r = 5;
+  select = 8;
+  start = 9;
+  up = 12;
+  down = 13;
+  left = 14;
+  right = 15;
 
+  getButton(eventKey) {
+    return Object.keys(this).find(key => this[key] === eventKey);
+  }
+}
+
+let gamePads = [];
+let gamePadLayout = 'default';
+gamePads['default'] = new gamePad();
+
+let gamepadSnes = new gamePad();
+gamepadSnes.b = 2;
+gamepadSnes.y = 3;
+gamepadSnes.x = 0;
+gamepadSnes.up = 'a10';
+gamepadSnes.down = 'a11';
+gamepadSnes.left = 'a00';
+gamepadSnes.right = 'a01';
+gamePads['snes'] = gamepadSnes;
+
+const sendGamePadEvent = (gamePadEvent) => {
+  if (p != null) {
+    let gamePad = gamePads[gamePadLayout];
+    let gamePadButton = gamePad.getButton(gamePadEvent.button);
+    if (typeof gamePadButton !== 'undefined') {
+      let keyEvent = {
+        type: gamePadEvent.type,
+        button: gamePadButton
+      };
+      //console.log(keyEvent);
+      p.send(JSON.stringify(keyEvent));
+    }
+  }
+};
 
 const sendKeyEvent = (event) => {
-  let gamePadButton =  gamePadButtons.getButton(event.key);
-  if (typeof gamePadButton !== 'undefined'){
+  let gamePadButton = keyPadButtons.getButton(event.key);
+  if (typeof gamePadButton !== 'undefined') {
     let keyEvent = {
       type: event.type,
       button: gamePadButton
@@ -38,7 +83,7 @@ document.addEventListener("keydown", (event) => {
   if (p != null) {
     // if (keypressTrigger.indexOf(event.code) == -1) {
     //   keypressTrigger.push(event.code);
-      sendKeyEvent(event);
+    sendKeyEvent(event);
     // }
   }
 });
@@ -48,7 +93,7 @@ document.addEventListener("keyup", (event) => {
     // let indexOf = keypressTrigger.indexOf(event.code);
     // if (indexOf != -1) {
     //   keypressTrigger.splice(indexOf);
-      sendKeyEvent(event);
+    sendKeyEvent(event);
     // }
   }
 });
@@ -113,3 +158,7 @@ const incoming = (data) => {
   }
   p.signal(data);
 };
+
+const defineControle = (obj) => {
+  gamePadLayout = $(obj).val();
+}
