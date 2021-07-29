@@ -1,6 +1,17 @@
 let p = null;
 let nomeJogador = "";
 
+let sala = new URL(window.location.href).searchParams.get('sala');
+
+$( document ).ready(function() {
+  $('#nomeSala').append(`<h1><b>${sala}</b></h1>`);
+  if(!sala){
+    alert("nome sala invalido");
+    $('#nomeSala').append(`<h1><b>SALA INVALIDA</b></h1>`);
+  }
+});
+
+
 let keyPadButtons = {
   y: "z",
   x: "s",
@@ -19,7 +30,7 @@ let keyPadButtons = {
   }
 };
 
-// PS4, PS5, Xbox360
+// PS4, PS5, Xbox360, XboxOne
 class gamePad {
   b = 0;
   a = 1;
@@ -52,6 +63,21 @@ gamepadSnes.down = 'a11';
 gamepadSnes.left = 'a00';
 gamepadSnes.right = 'a01';
 gamePads['snes'] = gamepadSnes;
+
+let gamepadPS3 = new gamePad();
+gamepadPS3.b = 14;
+gamepadPS3.a = 13;
+gamepadPS3.y = 15;
+gamepadPS3.x = 12;
+gamepadPS3.l = 10;
+gamepadPS3.r = 11;
+gamepadPS3.select = 0;
+gamepadPS3.start = 3;
+gamepadPS3.up = 4;
+gamepadPS3.down = 6;
+gamepadPS3.left = 7;
+gamepadPS3.right = 5;
+gamePads['ps3'] = gamepadPS3;
 
 const sendGamePadEvent = (gamePadEvent) => {
   if (p != null) {
@@ -107,11 +133,12 @@ socket.on('chat message', function (msg) {
   let objMsg = {
     origem: null,
     destino: null,
+    sala: null,
     tipoPacote: null,
     pacote: null
   };
   let objMsgRecebida = msg;
-  if (objMsgRecebida.destino !== 0 && objMsgRecebida.destino === nomeJogador) {
+  if (objMsgRecebida.destino !== 0 && objMsgRecebida.destino === nomeJogador && objMsgRecebida.sala == sala) {
     if ("helloData" === objMsgRecebida.tipoPacote) {
       incoming(objMsgRecebida.pacote);
     }
@@ -125,6 +152,7 @@ const conectar = () => {
   let objMsgEnviar = {
     origem: nomeJogador,
     destino: 0,
+    sala: sala,
     tipoPacote: "hello",
     pacote: null
   }
@@ -137,6 +165,7 @@ const bindingEvents = (p) => {
     let objMsgEnviar = {
       origem: nomeJogador,
       destino: 0,
+      sala: sala,
       tipoPacote: "helloOkData",
       pacote: data
     };

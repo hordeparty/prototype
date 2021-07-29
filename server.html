@@ -91,6 +91,7 @@
   </style>
 </head>
 <body>
+<div id="nomeSala"></div>
 <table border="1">
   <thead>
   <tr>
@@ -115,12 +116,12 @@
 <div class="emscripten_border">
   <canvas class="emscripten" id="canvas"></canvas>
 </div>
-<video width="640" height="480" controls id="emulator-video" playsinline autoplay></video>
-<hr>
 <div>
   <input id=file-selector type=file>
   <button id="start">Start</button>
 </div>
+<video width="400" height="400" controls id="emulator-video" playsinline autoplay></video>
+<hr>
 <div style="display: none;">
   <label>Current Frameskip</label>
   <span id=current-frameskip>0</span>

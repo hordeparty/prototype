@@ -1,5 +1,15 @@
 let clients = [];
 
+let sala = new URL(window.location.href).searchParams.get('sala');
+
+$( document ).ready(function() {
+  $('#nomeSala').append(`<h1><b>${sala}</b></h1>`);
+  if(!sala){
+    alert("nome sala invalido");
+    $('#nomeSala').append(`<h1><b>SALA INVALIDA</b></h1>`);
+  }
+});
+
 let gamePadButtons = {
   right: 1,
   left: 2,
@@ -25,10 +35,11 @@ socket.on('chat message', function (msg) {
     origem: null,
     destino: null,
     tipoPacote: null,
+    sala: null,
     pacote: null
   };
   let objMsgRecebida = msg;
-  if (objMsgRecebida.destino === 0) {
+  if (objMsgRecebida.destino === 0 && objMsgRecebida.sala == sala) {
     if (!(objMsgRecebida.origem in clients)) {
       adicionaJogador(objMsgRecebida.origem);
     }
@@ -59,6 +70,7 @@ const adicionaJogador = (nomeJogador) => {
 <option value="2">2</option>
 <option value="3">3</option>
 <option value="4">4</option>
+<option value="4">5</option>
 </select></td>
 <td>OFFLINE</td>
 </tr>`);
@@ -88,6 +100,7 @@ const bindingEvents = (nomeJogador) => {
     let objMsgEnviar = {
       origem: 0,
       destino: nomeJogador,
+      sala: sala,
       tipoPacote: "helloData",
       pacote: data
     };
