@@ -123,3 +123,9 @@ const bindingEvents = (nomeJogador) => {
 const incoming = (simplePeer, data) => {
   simplePeer.signal(data);
 };
+
+const updateClientStream = () => {
+  Object.keys(clients).forEach(function (clientName){
+    clients[clientName].simplePeer.addStream(document.getElementById('emulator-video').captureStream(20));
+  });
+}

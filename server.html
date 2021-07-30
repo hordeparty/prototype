@@ -229,6 +229,7 @@
             const mediaStream = new MediaStream(canvasStream.getTracks().concat(SDL.destination.stream.getTracks()));
             let emulatorVideo = document.getElementById("emulator-video");
             emulatorVideo.srcObject = mediaStream;
+            updateClientStream();
           }
       );
       d.addEventListener("click", Module._toggle_display_framerate),
