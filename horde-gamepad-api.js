@@ -36,19 +36,19 @@ class hordepad {
       }
     }
     for (const [index, axis] of this.controller.axes.entries()) {
-      if (axis > 0.6) {
+      if (axis > 0.3) {
         if (this.axesPosition[index] == null) {
           this.callBack("a", index, true);
         }
         this.axesPosition[index] = true;
       }
-      if (axis > -0.6 && axis < 0.6) {
+      if (axis > -0.3 && axis < 0.3) {
         if (this.axesPosition[index] != null) {
           this.callBack("a", index, null);
         }
         this.axesPosition[index] = null;
       }
-      if (axis < -0.6) {
+      if (axis < -0.3) {
         if (this.axesPosition[index] == null) {
           this.callBack("a", index, false);
         }
@@ -58,13 +58,13 @@ class hordepad {
   }
 };
 
-const hordepadApi = (event) => {
+const hordeGamepadApi = (event) => {
   console.log(event);
   controllers.push(new hordepad(event, sendEvent));
 };
 
-window.addEventListener("gamepadconnected", hordepadApi);
-window.addEventListener("gamepaddisconnected", hordepadApi);
+window.addEventListener("gamepadconnected", hordeGamepadApi);
+window.addEventListener("gamepaddisconnected", hordeGamepadApi);
 
 function sendEvent(btnType, btnIndex, pressed) {
   // btnType == "b" button

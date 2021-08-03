@@ -24,7 +24,7 @@ Gamepads testados:
 
 - HOST-WRTC (server.html + server.js + simplepeer.js)
 - HOST-SOCKET.IO (chat demo socket.io sem CORS https://github.com/hordeparty/chat-example.git)
-- MEDIA-CLIENT-PLAYER-FULL (client.html + client.js + hordepadapi.js + simplepeer.js)
+- MEDIA-CLIENT-PLAYER-FULL (client.html + client.js + horde-gamepad-api.js + simplepeer.js)
 - MEDIA-CLIENT-PLAYER-VIEWER (conceito)
 - MEDIA-CLIENT-VIEWER-NODE-MESH (conceito)
 - CLIENT-PLAYER-CONTROLER (conceito)
