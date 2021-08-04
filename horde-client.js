@@ -2,12 +2,27 @@ const socket = io("ws://localhost:3000/clients");
 let simplePeer = null;
 
 let room = new URL(window.location.href).searchParams.get('room');
-if (!room) {
-    room = "123";
-}
-socket.emit('joinRoom', room);
 
-socket.on('serverOffer', function (packet) {
+socket.on('createRoom', room => {
+    $('#room').val(room);
+    roomOk();
+});
+
+socket.on('serverReady', isServeReady => {
+    if (isServeReady && simplePeer === null) {
+        $('#connectBtn').removeAttr('disabled');
+        $('#connectBtn').html('GO GO GO! Connect!');
+        $('#createServerBtn').css({display: 'none'});
+    } else if (simplePeer !== null) {
+        $('#connectBtn').attr('disabled', 'disabled');
+        $('#connectBtn').html('Connected');
+    } else {
+        $('#connectBtn').attr('disabled', 'disabled');
+        $('#connectBtn').html('Waiting server...');
+    }
+});
+
+socket.on('serverOffer', packet => {
     if (simplePeer == null) {
         simplePeer = new SimplePeer({
             initiator: false,
@@ -25,9 +40,43 @@ socket.on('serverOffer', function (packet) {
     simplePeer.signal(packet);
 });
 
+const roomOk = () => {
+    if (!room) {
+        $('#createServerBtn').css({display: 'block'});
+    }
+    $('#room').attr('disabled', 'disabled');
+    $('#joinRoomBtn').attr('disabled', 'disabled');
+}
+
+const joinRoom = () => {
+    let room = $('#room').val();
+    if (room) {
+        socket.emit('joinRoom', room);
+        roomOk();
+    } else {
+        socket.emit('createRoom');
+    }
+}
+
+if (room) {
+    $('#room').val(room);
+    joinRoom();
+}
+
 const connect = () => {
     let playerName = document.getElementById("playerName").value;
     socket.emit('clientHello', playerName);
+    $("#connectBtn").attr('disabled', 'disabled');
+}
+
+const popupServer = () => {
+    window.open('horde-server.html?room=' + $('#room').val(),
+        'newwindow',
+        'width=800,height=600');
+}
+
+const changePlayerName = () => {
+    socket.emit('changePlayerName', $('#playerName').val());
 }
 
 //gamepad

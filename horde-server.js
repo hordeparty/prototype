@@ -103,6 +103,11 @@ socket.on('clientAnswer', msgAnswerIn => {
     $(`#tr${msgIn.from}`).children().get(2).innerHTML = "<b>ONLINE</b>";
 });
 
+socket.on('changePlayerName', msgPlayerNameIn => {
+    let msgIn = msgPlayerNameIn;
+    $(`#${msgIn.from}`).parent().prev().html(msgIn.msg)
+});
+
 const updateClientStream = () => {
     clients.forEach(function (client) {
         client.updateStream();
@@ -112,4 +117,8 @@ const updateClientStream = () => {
 const changeController = (controllerSelect) => {
     let client = clients.get(controllerSelect.attr('id'));
     client.controller = controllerSelect.val();
+}
+
+const broadcastServerReady = () => {
+    socket.emit('serverReady', true);
 }

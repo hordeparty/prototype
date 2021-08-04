@@ -119,6 +119,7 @@
 <div>
     <input id=file-selector type=file>
     <button id="start">Start</button>
+    <button onclick="broadcastServerReady();">Broadcast server ready</button>
 </div>
 <video width="400" height="400" controls id="emulator-video" playsinline autoplay></video>
 <hr>
@@ -232,6 +233,7 @@
                             let emulatorVideo = document.getElementById("emulator-video");
                             emulatorVideo.srcObject = mediaStream;
                             updateClientStream();
+                            broadcastServerReady();
                         }
                 );
             d.addEventListener("click", Module._toggle_display_framerate),

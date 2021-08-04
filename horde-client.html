@@ -7,15 +7,37 @@
     <script src="https://cdn.socket.io/3.1.3/socket.io.min.js"></script>
 </head>
 <body>
-<div id="nomeSala"></div>
-<input type="text" value="Name" id="playerName"/>
-<button id="connectBtn" onclick="connect();">connect</button>
-<select onchange="setGamePadLayout(this);">
-    <option value="keys">Keyboard</option>
-    <option value="default">PS4/PS5/Xbox360/XboxOne</option>
-    <option value="snes">Snes usb</option>
-    <option value="ps3">PS3</option>
-</select>
+<table border="0">
+    <tr>
+        <td align="right">Room</td>
+        <td><input type="text" value="" id="room"/></td>
+        <td colspan="2">
+            <button id="joinRoomBtn" onclick="joinRoom();" style="width: 100%;">create/join Room</button>
+        </td>
+        <td>
+            <button id="createServerBtn" onclick="popupServer();" style="width: 100%; display: none;">Create Server
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td align="right">Player</td>
+        <td><input type="text" value="Name" id="playerName" onchange="changePlayerName();"/></td>
+        <td align="right">Input</td>
+        <td><select onchange="setGamePadLayout(this);">
+            <option value="keys">Keyboard</option>
+            <option value="default">PS4/PS5/Xbox360/XboxOne</option>
+            <option value="snes">Snes usb</option>
+            <option value="ps3">PS3</option>
+        </select></td>
+
+    </tr>
+    <tr>
+        <td colspan="4">
+            <button id="connectBtn" onclick="connect();" disabled="disabled" style="width: 100%;">Waiting server...
+            </button>
+        </td>
+    </tr>
+</table>
 <br/>
 <video width="400" height="400" id="receiver-video" playsinline autoplay muted></video>
 <hr>
@@ -48,7 +70,7 @@ Volume:
 <script src="simplepeer.js"></script>
 
 <script src="horde-client.js"></script>
-<script src="hordepadapi.js"></script>
+<script src="horde-gamepad-api.js"></script>
 <script src="horde-gamepads.js"></script>
 
 </body>
