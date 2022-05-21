@@ -46,3 +46,19 @@ gamepadPS3.down = 6;
 gamepadPS3.left = 7;
 gamepadPS3.right = 5;
 gamePads.set('ps3', gamepadPS3);
+
+// Generic bluetooth
+let gamepadBluetooth = new DefaultGamePad();
+gamepadBluetooth.b = 0;
+gamepadBluetooth.a = 1;
+gamepadBluetooth.y = 3;
+gamepadBluetooth.x = 4;
+gamepadBluetooth.l = 6;
+gamepadBluetooth.r = 7;
+gamepadBluetooth.select = 10;
+gamepadBluetooth.start = 11;
+gamepadBluetooth.up = 'a10';
+gamepadBluetooth.down = 'a11';
+gamepadBluetooth.left = 'a00';
+gamepadBluetooth.right = 'a01';
+gamePads.set('bt', gamepadBluetooth);
