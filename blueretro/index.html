@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <title>Blueretro debug</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        table {
+            border: solid black 1px;
+        }
+
+        td {
+            border: solid black 1px;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vT9rPK2__komCjELFpf0UYz0cMWwvhAXgAU7C9nnwtgEaivjsh0q0xeCEiZAMA-paMrneePV7IqdX48/pubhtml">
+    BlueRetro mapping
+</a>
+<br/>
+Xbox360 gamepad buttons (should work with PS4, PS5, XboxOne)
+<br/>
+WARNING! This is just a proof of concept, and still work in progress.
+<br/>
+Press Btn10 or Btn11 to update binary/hex info
+<br/>
+
+<table>
+    <thead>
+    <tr>
+        <th>BTN0</th>
+        <th>BTN1</th>
+        <th>BTN2</th>
+        <th>BTN3</th>
+        <th>BTN4</th>
+        <th>BTN5</th>
+        <th>BTN6</th>
+        <th>BTN7</th>
+        <th>BTN8</th>
+        <th>BTN9</th>
+        <th>BTN10</th>
+        <th>BTN11</th>
+        <th>BTN12</th>
+        <th>BTN13</th>
+        <th>BTN14</th>
+        <th>BTN15</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr id="TRButtons">
+        <td>PAD_RB_DOWN</td>
+        <td>PAD_RB_RIGHT</td>
+        <td>PAD_RB_LEFT</td>
+        <td>PAD_RB_UP</td>
+        <td>PAD_LS</td>
+        <td>PAD_RS</td>
+        <td>PAD_LM</td>
+        <td>PAD_RM</td>
+        <td>PAD_MM</td>
+        <td>PAD_MS</td>
+        <td>10</td>
+        <td>11</td>
+        <td>PAD_LD_UP</td>
+        <td>PAD_LD_DOWN</td>
+        <td>PAD_LD_LEFT</td>
+        <td>PAD_LD_RIGHT</td>
+    </tr>
+    </tbody>
+
+</table>
+
+<hr>
+<div>
+<pre>
+const uint32_t generic_btns_mask[32] = {
+    BIT(PAD_LX_LEFT), BIT(PAD_LX_RIGHT), BIT(PAD_LY_DOWN), BIT(PAD_LY_UP),
+    BIT(PAD_RX_LEFT), BIT(PAD_RX_RIGHT), BIT(PAD_RY_DOWN), BIT(PAD_RY_UP),
+    BIT(PAD_LD_LEFT), BIT(PAD_LD_RIGHT), BIT(PAD_LD_DOWN), BIT(PAD_LD_UP),
+    BIT(PAD_RD_LEFT), BIT(PAD_RD_RIGHT), BIT(PAD_RD_DOWN), BIT(PAD_RD_UP),
+    BIT(PAD_RB_LEFT), BIT(PAD_RB_RIGHT), BIT(PAD_RB_DOWN), BIT(PAD_RB_UP),
+    BIT(PAD_MM), BIT(PAD_MS), BIT(PAD_MT), BIT(PAD_MQ),
+    BIT(PAD_LM), BIT(PAD_LS), BIT(PAD_LT), BIT(PAD_LJ),
+    BIT(PAD_RM), BIT(PAD_RS), BIT(PAD_RT), BIT(PAD_RJ),
+};
+</pre>
+</div>
+<hr>
+<table id="padmap">
+    <tbody>
+    <tr>
+        <td>PAD_LX_LEFT</td>
+        <td>PAD_LX_RIGHT</td>
+        <td>PAD_LY_DOWN</td>
+        <td>PAD_LY_UP</td>
+    </tr>
+    <td>PAD_RX_LEFT</td>
+    <td>PAD_RX_RIGHT</td>
+    <td>PAD_RY_DOWN</td>
+    <td>PAD_RY_UP</td>
+    </tr>
+    <tr>
+        <td>PAD_LD_LEFT</td>
+        <td>PAD_LD_RIGHT</td>
+        <td>PAD_LD_DOWN</td>
+        <td>PAD_LD_UP</td>
+    </tr>
+    <tr>
+        <td>PAD_RD_LEFT</td>
+        <td>PAD_RD_RIGHT</td>
+        <td>PAD_RD_DOWN</td>
+        <td>PAD_RD_UP</td>
+    </tr>
+    <tr>
+        <td>PAD_RB_LEFT</td>
+        <td>PAD_RB_RIGHT</td>
+        <td>PAD_RB_DOWN</td>
+        <td>PAD_RB_UP</td>
+    </tr>
+    <tr>
+        <td>PAD_MM</td>
+        <td>PAD_MS</td>
+        <td>PAD_MT</td>
+        <td>PAD_MQ</td>
+    </tr>
+    <tr>
+        <td>PAD_LM</td>
+        <td>PAD_LS</td>
+        <td>PAD_LT</td>
+        <td>PAD_LJ</td>
+    </tr>
+    <tr>
+        <td>PAD_RM</td>
+        <td>PAD_RS</td>
+        <td>PAD_RT</td>
+        <td>PAD_RJ</td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead>
+    <tr>
+        <th>binary</th>
+        <th>hex</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td id="binaryval">00000000000000000000000000000000</td>
+        <td id="hexval">0x00000000</td>
+    </tr>
+    </tbody>
+</table>
+<script src="gamepad-api.js"></script>
+</body>
+</html>
