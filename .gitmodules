@@ -1,0 +1,6 @@
+[submodule "xnes"]
+	path = xnes
+	url = https://github.com/hordeparty/xnes.git
+[submodule "chat-example"]
+	path = chat-example
+	url = https://github.com/hordeparty/chat-example.git
