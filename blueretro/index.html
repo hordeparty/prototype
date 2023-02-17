@@ -15,9 +15,6 @@
     </style>
 </head>
 <body>
-<a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vT9rPK2__komCjELFpf0UYz0cMWwvhAXgAU7C9nnwtgEaivjsh0q0xeCEiZAMA-paMrneePV7IqdX48/pubhtml">
-    BlueRetro mapping
-</a>
 <br/>
 Xbox360 gamepad buttons (should work with PS4, PS5, XboxOne)
 <br/>
@@ -73,15 +70,11 @@ Press Btn10 or Btn11 to update binary/hex info
 <hr>
 <div>
 <pre>
-const uint32_t generic_btns_mask[32] = {
-    BIT(PAD_LX_LEFT), BIT(PAD_LX_RIGHT), BIT(PAD_LY_DOWN), BIT(PAD_LY_UP),
-    BIT(PAD_RX_LEFT), BIT(PAD_RX_RIGHT), BIT(PAD_RY_DOWN), BIT(PAD_RY_UP),
-    BIT(PAD_LD_LEFT), BIT(PAD_LD_RIGHT), BIT(PAD_LD_DOWN), BIT(PAD_LD_UP),
-    BIT(PAD_RD_LEFT), BIT(PAD_RD_RIGHT), BIT(PAD_RD_DOWN), BIT(PAD_RD_UP),
-    BIT(PAD_RB_LEFT), BIT(PAD_RB_RIGHT), BIT(PAD_RB_DOWN), BIT(PAD_RB_UP),
-    BIT(PAD_MM), BIT(PAD_MS), BIT(PAD_MT), BIT(PAD_MQ),
-    BIT(PAD_LM), BIT(PAD_LS), BIT(PAD_LT), BIT(PAD_LJ),
-    BIT(PAD_RM), BIT(PAD_RS), BIT(PAD_RT), BIT(PAD_RJ),
+const uint32_t serial_btns_mask[16] = {
+    BIT(PAD_RB_DOWN), BIT(PAD_RB_RIGHT), BIT(PAD_RB_LEFT), BIT(PAD_RB_UP),
+    BIT(PAD_LS), BIT(PAD_RS), BIT(PAD_LM), BIT(PAD_RM),
+    BIT(PAD_MM), BIT(PAD_MS), PAD_LJ, BIT(PAD_RJ),
+    BIT(PAD_LD_UP), BIT(PAD_LD_DOWN), BIT(PAD_LD_LEFT), BIT(PAD_LD_RIGHT)
 };
 </pre>
 </div>
@@ -89,51 +82,28 @@ const uint32_t generic_btns_mask[32] = {
 <table id="padmap">
     <tbody>
     <tr>
-        <td>PAD_LX_LEFT</td>
-        <td>PAD_LX_RIGHT</td>
-        <td>PAD_LY_DOWN</td>
-        <td>PAD_LY_UP</td>
-    </tr>
-    <td>PAD_RX_LEFT</td>
-    <td>PAD_RX_RIGHT</td>
-    <td>PAD_RY_DOWN</td>
-    <td>PAD_RY_UP</td>
-    </tr>
-    <tr>
-        <td>PAD_LD_LEFT</td>
-        <td>PAD_LD_RIGHT</td>
-        <td>PAD_LD_DOWN</td>
-        <td>PAD_LD_UP</td>
-    </tr>
-    <tr>
-        <td>PAD_RD_LEFT</td>
-        <td>PAD_RD_RIGHT</td>
-        <td>PAD_RD_DOWN</td>
-        <td>PAD_RD_UP</td>
-    </tr>
-    <tr>
-        <td>PAD_RB_LEFT</td>
-        <td>PAD_RB_RIGHT</td>
         <td>PAD_RB_DOWN</td>
+        <td>PAD_RB_RIGHT</td>
+        <td>PAD_RB_LEFT</td>
         <td>PAD_RB_UP</td>
+    </tr>
+    <tr>
+        <td>PAD_LS</td>
+        <td>PAD_RS</td>
+        <td>PAD_LM</td>
+        <td>PAD_RM</td>
     </tr>
     <tr>
         <td>PAD_MM</td>
         <td>PAD_MS</td>
-        <td>PAD_MT</td>
-        <td>PAD_MQ</td>
-    </tr>
-    <tr>
-        <td>PAD_LM</td>
-        <td>PAD_LS</td>
-        <td>PAD_LT</td>
         <td>PAD_LJ</td>
+        <td>PAD_RJ</td>
     </tr>
     <tr>
-        <td>PAD_RM</td>
-        <td>PAD_RS</td>
-        <td>PAD_RT</td>
-        <td>PAD_RJ</td>
+        <td>PAD_LD_UP</td>
+        <td>PAD_LD_DOWN</td>
+        <td>PAD_LD_LEFT</td>
+        <td>PAD_LD_RIGHT</td>
     </tr>
     </tbody>
 </table>
@@ -146,11 +116,16 @@ const uint32_t generic_btns_mask[32] = {
     </thead>
     <tbody>
     <tr>
-        <td id="binaryval">00000000000000000000000000000000</td>
-        <td id="hexval">0x00000000</td>
+        <td id="binaryval">0000000000000000</td>
+        <td id="hexval">0x0000</td>
     </tr>
     </tbody>
 </table>
+<input type="button" onclick="connectToSerial();" value="Connect to esp32"/>
+<input type="button" onclick="clearConsole();" value="Clear console"/>
+<br/>
+<textarea id="serial-out" cols="100" rows="10"></textarea>
+<script src="serial.js"></script>
 <script src="gamepad-api.js"></script>
 </body>
 </html>

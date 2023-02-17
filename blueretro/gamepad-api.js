@@ -1,19 +1,24 @@
+let hordepaddbg = {};
 let controllers = [];
 let generic_btns_mask = [
-    false, false, false, false,
-    false, false, false, false,
-    false, false, false, false,
-    false, false, false, false,
     false, false, false, false,
     false, false, false, false,
     false, false, false, false,
     false, false, false, false
 ];
 
+let generic_btns_dbg = [
+    'k', 'l', 'i', 'o',
+    'q', 'e', ' ', ' ',
+    'z', 'x', ' ', ' ',
+    'w', 's', 'a', 'd'
+];
+
 class hordepad {
     controller = {buttons: null, axes: null};
     controllerIdx = null;
     callBack = function (btnIndex, pressed) {
+        console.log(btnIndex, pressed);
     };
     buttonsPressed = [];
     axesPosition = [];
@@ -47,7 +52,8 @@ class hordepad {
 
 const hordeGamepadApi = (event) => {
     console.log(event);
-    controllers.push(new hordepad(event, sendGamepadState));
+    hordepaddbg = new hordepad(event, sendGamepadState);
+    controllers.push(hordepaddbg);
 };
 
 window.addEventListener("gamepadconnected", hordeGamepadApi);
@@ -73,6 +79,7 @@ function debugProtocol(padEnumText, enabled) {
             if (padEnumText === $(domTD).text()) {
                 if (enabled) {
                     generic_btns_mask[idx] = true;
+                    serialData[0] = generic_btns_dbg[idx].charCodeAt(0);
                     $(domTD).css({"background": "black", "color": "white"});
                 } else {
                     $(domTD).css({"background": "white", "color": "black"});
@@ -80,18 +87,23 @@ function debugProtocol(padEnumText, enabled) {
                 }
             }
         });
-    if((padEnumText === "10" || padEnumText === "11") && enabled){
+    if ((padEnumText === "10" || padEnumText === "11") && enabled) {
         let binaryText = '';
         for (let i = 0; i < generic_btns_mask.length; i++) {
             if (generic_btns_mask[i]) {
-                binaryText = '1' + binaryText ;
+                binaryText = '1' + binaryText;
             } else {
-                binaryText = '0' + binaryText ;
+                binaryText = '0' + binaryText;
             }
             $('#binaryval').text(binaryText);
         }
         let hexText = parseInt(binaryText, 2).toString(16).toUpperCase();
-        $('#hexval').text('0x' + hexText.padStart(8,'0'));
+        $('#hexval').text('0x' + hexText.padStart(4, '0'));
+        if (serialConnected) {
+            const bufferTmp = new Uint8Array(serialData).buffer;
+            writer.write(bufferTmp);
+            serialData[0] = 0x2E;
+        }
     }
 }
 
