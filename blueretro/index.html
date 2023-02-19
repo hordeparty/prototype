@@ -20,7 +20,7 @@ Xbox360 gamepad buttons (should work with PS4, PS5, XboxOne)
 <br/>
 WARNING! This is just a proof of concept, and still work in progress.
 <br/>
-Press Btn10 or Btn11 to update binary/hex info
+Press Toggle Sync button to update binary/hex info and send data to esp32
 <br/>
 
 <table>
@@ -56,8 +56,8 @@ Press Btn10 or Btn11 to update binary/hex info
         <td>PAD_RM</td>
         <td>PAD_MM</td>
         <td>PAD_MS</td>
-        <td>10</td>
-        <td>11</td>
+        <td>PAD_LJ</td>
+        <td>PAD_RJ</td>
         <td>PAD_LD_UP</td>
         <td>PAD_LD_DOWN</td>
         <td>PAD_LD_LEFT</td>
@@ -123,6 +123,9 @@ const uint32_t serial_btns_mask[16] = {
 </table>
 <input type="button" onclick="connectToSerial();" value="Connect to esp32"/>
 <input type="button" onclick="clearConsole();" value="Clear console"/>
+<input type="button" onclick="toggleSync();" value="Toggle Sync (high cpu usage)"/>
+<span id="span_sync">SYNC OFF</span>
+
 <br/>
 <textarea id="serial-out" cols="100" rows="10"></textarea>
 <script src="serial.js"></script>

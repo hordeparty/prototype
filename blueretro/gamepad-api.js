@@ -1,5 +1,6 @@
 let hordepaddbg = {};
 let controllers = [];
+let syncEnabled = false;
 let generic_btns_mask = [
     false, false, false, false,
     false, false, false, false,
@@ -9,8 +10,8 @@ let generic_btns_mask = [
 
 let generic_btns_dbg = [
     'k', 'l', 'i', 'o',
-    'q', 'e', ' ', ' ',
-    'z', 'x', ' ', ' ',
+    'q', 'e', ';', ';',
+    'z', 'x', ';', ';',
     'w', 's', 'a', 'd'
 ];
 
@@ -79,7 +80,11 @@ function debugProtocol(padEnumText, enabled) {
             if (padEnumText === $(domTD).text()) {
                 if (enabled) {
                     generic_btns_mask[idx] = true;
-                    serialData[0] = generic_btns_dbg[idx].charCodeAt(0);
+                    let btnValue = generic_btns_dbg[idx].charCodeAt(0);
+                    serialData[0] = btnValue;
+                    serialData[1] = btnValue;
+                    serialData[2] = btnValue;
+                    serialData[3] = btnValue;
                     $(domTD).css({"background": "black", "color": "white"});
                 } else {
                     $(domTD).css({"background": "white", "color": "black"});
@@ -87,7 +92,7 @@ function debugProtocol(padEnumText, enabled) {
                 }
             }
         });
-    if ((padEnumText === "10" || padEnumText === "11") && enabled) {
+    if (syncEnabled || ((padEnumText === "10" || padEnumText === "11") && enabled)) {
         let binaryText = '';
         for (let i = 0; i < generic_btns_mask.length; i++) {
             if (generic_btns_mask[i]) {
@@ -99,10 +104,12 @@ function debugProtocol(padEnumText, enabled) {
         }
         let hexText = parseInt(binaryText, 2).toString(16).toUpperCase();
         $('#hexval').text('0x' + hexText.padStart(4, '0'));
-        if (serialConnected) {
-            const bufferTmp = new Uint8Array(serialData).buffer;
-            writer.write(bufferTmp);
+        if (serialConnected && enabled) {
+            sendCommand(serialData);
             serialData[0] = 0x2E;
+            serialData[1] = 0x2E;
+            serialData[2] = 0x2E;
+            serialData[3] = 0x2C;
         }
     }
 }
@@ -112,3 +119,20 @@ setInterval(() => {
         controllers[i].update();
     }
 }, 10);
+
+function debugSerialFlow() {
+    for (let i = 0; i < 10; i++) {
+        sendCommand(serialData);
+    }
+}
+
+function toggleSync() {
+    syncEnabled = !syncEnabled;
+    if (syncEnabled) {
+        $('#span_sync').css({'background': 'blue', 'color': 'white'})
+        $('#span_sync').text('SYNC ON');
+    } else {
+        $('#span_sync').css({'background': 'white', 'color': 'black'})
+        $('#span_sync').text('SYNC OFF');
+    }
+}

@@ -2,14 +2,19 @@ let reader;
 let writer;
 let serialConnected = false;
 
-const serialData = [0x2E, 0x2E, 0x2E, 0x2E];
+const serialData = [0x2E, 0x2E, 0x2E, 0x2C];
 
-// const buffer = new Uint8Array(data).buffer;
+function appendConsole(text) {
+    let psconsole = $('#serial-out');
+    psconsole.append(text);
+    psconsole.scrollTop(psconsole[0].scrollHeight - psconsole.height());
+    if (psconsole.val().length > 10000) {
+        psconsole.text(psconsole.val().substring(1000));
+    }
+}
 
 function handleSerialData({value, done}) {
-    let psconsole = $('#serial-out');
-    psconsole.append(`${new TextDecoder().decode(value)}`);
-    psconsole.scrollTop(psconsole[0].scrollHeight - psconsole.height());
+    appendConsole(`${new TextDecoder().decode(value)}`);
     reader.read().then(handleSerialData);
 }
 
@@ -26,6 +31,11 @@ async function connectToSerial() {
     serialConnected = true;
 }
 
-function clearConsole(){
+function sendCommand(data) {
+    const bufferTmp = new Uint8Array(data).buffer;
+    writer.write(bufferTmp);
+}
+
+function clearConsole() {
     $('#serial-out').text('');
 }
