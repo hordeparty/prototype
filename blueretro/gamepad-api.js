@@ -72,7 +72,7 @@ function floatToBytes(value) {
 function sendGamepadState(buttons, axes) {
     let axesChildren = $('#TRAxes').children();
     for (let i = 0; i < axes.length; i++) {
-        let childTD = $(axesChildren.get(i + 1));
+        let childTD = $(axesChildren.get(i + 2));
         if (syncEnabled) {
             let axisBytes = floatToBytes(axes[i]);
             let axisHex = '0x' + parseInt(axisBytes).toString(16).toUpperCase().padStart(2, '0');

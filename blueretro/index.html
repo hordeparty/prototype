@@ -118,26 +118,32 @@ const uint32_t serial_btns_mask[16] = {
         <table>
             <thead>
             <tr>
+                <th>gamepad idx</th>
                 <th>BTN hex</th>
                 <th>axis-0 hex</th>
                 <th>axis-1 hex</th>
                 <th>axis-2 hex</th>
                 <th>axis-3 hex</th>
                 <th>axis-4 hex</th>
+                <th>crc4</th>
             </tr>
             </thead>
             <tbody>
             <tr id="TRAxes">
+                <td>0x0</td>
                 <td id="hexval">0x0000</td>
                 <td>0x00</td>
                 <td>0x00</td>
                 <td>0x00</td>
                 <td>0x00</td>
                 <td>0x00</td>
+                <td id="crc4">0xA</td>
             </tr>
             <tr>
+                <td>12 gamepads<br/>0 to B</td>
                 <td id="binaryval">0000000000000000</td>
-                <td colspan="5" ></td>
+                <td colspan="5">axes (-127 to 127)</td>
+                <td>checkum<br/>4 bits</td>
             </tr>
             </tbody>
         </table>
