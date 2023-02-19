@@ -6,6 +6,12 @@
     <style>
         table {
             border: solid black 1px;
+            font-family: monospace;
+        }
+
+        th {
+            border: solid black 1px;
+            padding: 5px;
         }
 
         td {
@@ -79,48 +85,64 @@ const uint32_t serial_btns_mask[16] = {
 </pre>
 </div>
 <hr>
-<table id="padmap">
-    <tbody>
-    <tr>
-        <td>PAD_RB_DOWN</td>
-        <td>PAD_RB_RIGHT</td>
-        <td>PAD_RB_LEFT</td>
-        <td>PAD_RB_UP</td>
-    </tr>
-    <tr>
-        <td>PAD_LS</td>
-        <td>PAD_RS</td>
-        <td>PAD_LM</td>
-        <td>PAD_RM</td>
-    </tr>
-    <tr>
-        <td>PAD_MM</td>
-        <td>PAD_MS</td>
-        <td>PAD_LJ</td>
-        <td>PAD_RJ</td>
-    </tr>
-    <tr>
-        <td>PAD_LD_UP</td>
-        <td>PAD_LD_DOWN</td>
-        <td>PAD_LD_LEFT</td>
-        <td>PAD_LD_RIGHT</td>
-    </tr>
-    </tbody>
-</table>
-<table>
-    <thead>
-    <tr>
-        <th>binary</th>
-        <th>hex</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td id="binaryval">0000000000000000</td>
-        <td id="hexval">0x0000</td>
-    </tr>
-    </tbody>
-</table>
+<div style="display: flex;">
+    <div>
+        <table id="padmap">
+            <tbody>
+            <tr>
+                <td>PAD_RB_DOWN</td>
+                <td>PAD_RB_RIGHT</td>
+                <td>PAD_RB_LEFT</td>
+                <td>PAD_RB_UP</td>
+            </tr>
+            <tr>
+                <td>PAD_LS</td>
+                <td>PAD_RS</td>
+                <td>PAD_LM</td>
+                <td>PAD_RM</td>
+            </tr>
+            <tr>
+                <td>PAD_MM</td>
+                <td>PAD_MS</td>
+                <td>PAD_LJ</td>
+                <td>PAD_RJ</td>
+            </tr>
+            <tr>
+                <td>PAD_LD_UP</td>
+                <td>PAD_LD_DOWN</td>
+                <td>PAD_LD_LEFT</td>
+                <td>PAD_LD_RIGHT</td>
+            </tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+            <tr>
+                <th>BTN hex</th>
+                <th>axis-0 hex</th>
+                <th>axis-1 hex</th>
+                <th>axis-2 hex</th>
+                <th>axis-3 hex</th>
+                <th>axis-4 hex</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr id="TRAxes">
+                <td id="hexval">0x0000</td>
+                <td>0x00</td>
+                <td>0x00</td>
+                <td>0x00</td>
+                <td>0x00</td>
+                <td>0x00</td>
+            </tr>
+            <tr>
+                <td id="binaryval">0000000000000000</td>
+                <td colspan="5" ></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 <input type="button" onclick="connectToSerial();" value="Connect to esp32"/>
 <input type="button" onclick="clearConsole();" value="Clear console"/>
 <input type="button" onclick="toggleSync();" value="Toggle Sync (high cpu usage)"/>

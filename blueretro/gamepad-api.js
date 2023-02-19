@@ -18,8 +18,9 @@ let generic_btns_dbg = [
 class hordepad {
     controller = {buttons: null, axes: null};
     controllerIdx = null;
-    callBack = function (btnIndex, pressed) {
-        console.log(btnIndex, pressed);
+    callBack = function (buttons, axes) {
+        //replaced with sendGamepadState(buttons, axes)
+        console.log(buttons, axes);
     };
     buttonsPressed = [];
     axesPosition = [];
@@ -38,6 +39,9 @@ class hordepad {
 
     update() {
         this.controller = navigator.getGamepads()[this.controllerIdx];
+        for (const [index, axis] of this.controller.axes.entries()) {
+            this.axesPosition[index] = axis;
+        }
         for (const [index, button] of this.controller.buttons.entries()) {
             if (button.pressed || button.touched) {
                 if (this.buttonsPressed[index] == false)
@@ -47,7 +51,7 @@ class hordepad {
                     this.buttonsPressed[index] = false;
             }
         }
-        this.callBack(this.buttonsPressed, null);
+        this.callBack(this.buttonsPressed, this.axesPosition);
     }
 };
 
@@ -60,7 +64,21 @@ const hordeGamepadApi = (event) => {
 window.addEventListener("gamepadconnected", hordeGamepadApi);
 window.addEventListener("gamepaddisconnected", hordeGamepadApi);
 
+function floatToBytes(value) {
+    let intValue = Math.round(value * 127.5);
+    return intValue;
+}
+
 function sendGamepadState(buttons, axes) {
+    let axesChildren = $('#TRAxes').children();
+    for (let i = 0; i < axes.length; i++) {
+        let childTD = $(axesChildren.get(i + 1));
+        if (syncEnabled) {
+            let axisBytes = floatToBytes(axes[i]);
+            let axisHex = '0x' + parseInt(axisBytes).toString(16).toUpperCase().padStart(2, '0');
+            childTD.text(axisHex);
+        }
+    }
     let children = $('#TRButtons').children();
     for (let i = 0; i < buttons.length; i++) {
         let childTD = $(children.get(i));
