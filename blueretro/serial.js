@@ -2,7 +2,7 @@ let reader;
 let writer;
 let serialConnected = false;
 
-const serialData = [0x2E, 0x2E, 0x2E, 0x2C];
+const serialData = [0xB0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xBF];
 
 function appendConsole(text) {
     let psconsole = $('#serial-out');

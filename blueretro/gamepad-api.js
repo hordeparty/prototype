@@ -8,13 +8,6 @@ let generic_btns_mask = [
     false, false, false, false
 ];
 
-let generic_btns_dbg = [
-    'k', 'l', 'i', 'o',
-    'q', 'e', ';', ';',
-    'z', 'x', ';', ';',
-    'w', 's', 'a', 'd'
-];
-
 class hordepad {
     controller = {buttons: null, axes: null};
     controllerIdx = null;
@@ -65,8 +58,7 @@ window.addEventListener("gamepadconnected", hordeGamepadApi);
 window.addEventListener("gamepaddisconnected", hordeGamepadApi);
 
 function floatToBytes(value) {
-    let intValue = Math.round(value * 127.5);
-    return intValue;
+    return Math.round((1 + value) * 127.5);
 }
 
 function sendGamepadState(buttons, axes) {
@@ -75,6 +67,7 @@ function sendGamepadState(buttons, axes) {
         let childTD = $(axesChildren.get(i + 2));
         if (syncEnabled) {
             let axisBytes = floatToBytes(axes[i]);
+            serialData[i + 3] = axisBytes;
             let axisHex = '0x' + parseInt(axisBytes).toString(16).toUpperCase().padStart(2, '0');
             childTD.text(axisHex);
         }
@@ -98,11 +91,9 @@ function debugProtocol(padEnumText, enabled) {
             if (padEnumText === $(domTD).text()) {
                 if (enabled) {
                     generic_btns_mask[idx] = true;
-                    let btnValue = generic_btns_dbg[idx].charCodeAt(0);
-                    serialData[0] = btnValue;
-                    serialData[1] = btnValue;
-                    serialData[2] = btnValue;
-                    serialData[3] = btnValue;
+                    let btnValue = 1 << idx;
+                    serialData[1] = (btnValue >> 8) & 0xff;
+                    serialData[2] = btnValue & 0xff;
                     $(domTD).css({"background": "black", "color": "white"});
                 } else {
                     $(domTD).css({"background": "white", "color": "black"});
@@ -110,7 +101,7 @@ function debugProtocol(padEnumText, enabled) {
                 }
             }
         });
-    if (syncEnabled || ((padEnumText === "10" || padEnumText === "11") && enabled)) {
+    if (syncEnabled) {
         let binaryText = '';
         for (let i = 0; i < generic_btns_mask.length; i++) {
             if (generic_btns_mask[i]) {
@@ -121,13 +112,11 @@ function debugProtocol(padEnumText, enabled) {
             $('#binaryval').text(binaryText);
         }
         let hexText = parseInt(binaryText, 2).toString(16).toUpperCase();
+        // let hexText = parseInt(String(serialData[1])).toString(16).toUpperCase();
+
         $('#hexval').text('0x' + hexText.padStart(4, '0'));
         if (serialConnected && enabled) {
             sendCommand(serialData);
-            serialData[0] = 0x2E;
-            serialData[1] = 0x2E;
-            serialData[2] = 0x2E;
-            serialData[3] = 0x2C;
         }
     }
 }

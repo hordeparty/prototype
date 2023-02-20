@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!--
+this page can be tested on:
+https://htmlpreview.github.io/?https://github.com/hordeparty/prototype/blob/main/blueretro/index.html
+-->
 <html lang="pt">
 <head>
     <title>Blueretro debug</title>
@@ -22,9 +26,10 @@
 </head>
 <body>
 <br/>
-Xbox360 gamepad buttons (should work with PS4, PS5, XboxOne)
+Xbox360 gamepad buttons (should work with PS4, PS5, XboxOne, or any
+<a href="https://w3c.github.io/gamepad/#fig-visual-representation-of-a-standard-gamepad-layout">W3C Gamepad</a> )
 <br/>
-WARNING! This is just a proof of concept, and still work in progress.
+WARNING! This is just a proof of concept, with poor performance, for debug purposes only.
 <br/>
 Press Toggle Sync button to update binary/hex info and send data to esp32
 <br/>
@@ -118,32 +123,41 @@ const uint32_t serial_btns_mask[16] = {
         <table>
             <thead>
             <tr>
-                <th>gamepad idx</th>
-                <th>BTN hex</th>
+                <th>INI + gamepad idx</th>
+                <th colspan="2">BTN status</th>
                 <th>axis-0 hex</th>
                 <th>axis-1 hex</th>
                 <th>axis-2 hex</th>
                 <th>axis-3 hex</th>
-                <th>axis-4 hex</th>
-                <th>crc4</th>
+                <th>crc8</th>
             </tr>
             </thead>
             <tbody>
+            <tr>
+                <td>serialData[0]</td>
+                <td>serialData[1]</td>
+                <td>serialData[2]</td>
+                <td>serialData[3]</td>
+                <td>serialData[4]</td>
+                <td>serialData[5]</td>
+                <td>serialData[6]</td>
+                <td>serialData[7]</td>
+
+            </tr>
             <tr id="TRAxes">
-                <td>0x0</td>
-                <td id="hexval">0x0000</td>
+                <td>0xB0</td>
+                <td id="hexval" colspan="2">0x0000</td>
                 <td>0x00</td>
                 <td>0x00</td>
                 <td>0x00</td>
                 <td>0x00</td>
-                <td>0x00</td>
-                <td id="crc4">0xA</td>
+                <td id="crc8">0xBF</td>
             </tr>
             <tr>
-                <td>12 gamepads<br/>0 to B</td>
-                <td id="binaryval">0000000000000000</td>
-                <td colspan="5">axes (-127 to 127)</td>
-                <td>checkum<br/>4 bits</td>
+                <td>B + 12 gamepads<br/>0xB0 to 0xBB</td>
+                <td id="binaryval" colspan="2">0000000000000000</td>
+                <td colspan="4">axes (0x00 to 0xFF)</td>
+                <td>checkum<br/>8 bits</td>
             </tr>
             </tbody>
         </table>
