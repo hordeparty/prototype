@@ -1,12 +1,6 @@
 let hordepaddbg = {};
 let controllers = [];
 let syncEnabled = false;
-let generic_btns_mask = [
-    false, false, false, false,
-    false, false, false, false,
-    false, false, false, false,
-    false, false, false, false
-];
 
 class hordepad {
     controller = {buttons: null, axes: null};
@@ -89,31 +83,28 @@ function debugProtocol(padEnumText, enabled) {
     $("#padmap td").each(
         function (idx, domTD) {
             if (padEnumText === $(domTD).text()) {
+                let btnValue = 1 << idx;
+                let btnBitPart1 = (btnValue >> 8) & 0xff;
+                let btnBitPart2 = btnValue & 0xff;
                 if (enabled) {
-                    generic_btns_mask[idx] = true;
-                    let btnValue = 1 << idx;
-                    serialData[1] = (btnValue >> 8) & 0xff;
-                    serialData[2] = btnValue & 0xff;
+                    serialData[1] = serialData[1] | btnBitPart1;
+                    serialData[2] = serialData[2] | btnBitPart2;
                     $(domTD).css({"background": "black", "color": "white"});
                 } else {
                     $(domTD).css({"background": "white", "color": "black"});
-                    generic_btns_mask[idx] = false;
+                    serialData[1] = serialData[1] & (btnBitPart1 ^ 0xff);
+                    serialData[2] = serialData[2] & (btnBitPart2 ^ 0xff);
                 }
             }
         });
     if (syncEnabled) {
-        let binaryText = '';
-        for (let i = 0; i < generic_btns_mask.length; i++) {
-            if (generic_btns_mask[i]) {
-                binaryText = '1' + binaryText;
-            } else {
-                binaryText = '0' + binaryText;
-            }
-            $('#binaryval').text(binaryText);
-        }
-        let hexText = parseInt(binaryText, 2).toString(16).toUpperCase();
-        // let hexText = parseInt(String(serialData[1])).toString(16).toUpperCase();
+        let hexText1 = parseInt(String(serialData[1])).toString(16).toUpperCase();
+        let hexText2 = parseInt(String(serialData[2])).toString(16).toUpperCase();
+        let hexText = hexText1.padStart(2, '0') + hexText2.padStart(2, '0');
 
+        let binaryText = parseInt(String(serialData[1])).toString(2).padStart(8, '0');
+        binaryText = binaryText + parseInt(String(serialData[2])).toString(2).padStart(8, '0');
+        $('#binaryval').text(binaryText);
         $('#hexval').text('0x' + hexText.padStart(4, '0'));
         if (serialConnected && enabled) {
             sendCommand(serialData);
@@ -126,12 +117,6 @@ setInterval(() => {
         controllers[i].update();
     }
 }, 10);
-
-function debugSerialFlow() {
-    for (let i = 0; i < 10; i++) {
-        sendCommand(serialData);
-    }
-}
 
 function toggleSync() {
     syncEnabled = !syncEnabled;
