@@ -106,7 +106,7 @@ function debugProtocol(padEnumText, enabled) {
         binaryText = binaryText + parseInt(String(serialData[2])).toString(2).padStart(8, '0');
         $('#binaryval').text(binaryText);
         $('#hexval').text('0x' + hexText.padStart(4, '0'));
-        if (serialConnected && enabled) {
+        if (serialConnected) {
             sendCommand(serialData);
         }
     }

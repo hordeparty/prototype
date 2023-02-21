@@ -9,8 +9,8 @@ function appendConsole(text) {
     psconsole.append(text);
     psconsole.text(psconsole.val().replaceAll('\x1B','').replaceAll('[1m','').replaceAll('[37m','').replaceAll('[0m',''));
     psconsole.scrollTop(psconsole[0].scrollHeight - psconsole.height());
-    if (psconsole.val().length > 10000) {
-        psconsole.text(psconsole.val().substring(1000));
+    if (psconsole.val().length > 1000) {
+        psconsole.text(psconsole.val().substring(100));
     }
 }
 
